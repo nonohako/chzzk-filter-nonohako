@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "치지직 라이브 필터",
+  "version": "1.0",
+  "description": "CHZZK(치지직) 라이브 필터",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "scripting",
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://chzzk.naver.com/lives"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://chzzk.naver.com/lives"],
+      "js": ["content.js"]
+    }
+  ]
+}
