@@ -1,5 +1,4 @@
 console.log("chzzk filter activated")
-console.log('github repository : https://github.com/demd7362/chzzk-filter')
 
 chrome.storage.sync.get(['streamerNames'], function (result) {
   console.log('filtered streamer : ', result.streamerNames)
