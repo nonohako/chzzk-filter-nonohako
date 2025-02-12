@@ -1,31 +1,41 @@
 console.log("chzzk filter activated")
 
 function filterStreamers() {
-  chrome.storage.sync.get(['streamerNames'], function (result) {
+  chrome.storage.sync.get(['streamerNames', 'tags'], function (result) {
     const streamerNames = new Set(result.streamerNames || [])
-    if (streamerNames.size > 0) {
-      document.querySelectorAll('li').forEach(function (node) {
-        const streamerName = node.querySelector('.name_text__yQG50')?.textContent
-        if (streamerNames.has(streamerName)) {
-          node.remove()
+    const tags = new Set(result.tags || [])
+    document.querySelectorAll('li').forEach(function (node) {
+      const streamerName = node.querySelector('.name_text__yQG50')?.textContent
+      if (streamerNames.has(streamerName)) {
+        node.remove()
+      } else {
+        const tagNodes = node.querySelectorAll('.video_card_category__xQ15T')
+        if(tagNodes.length > 0){
+          const ownTags = Array.from(tagNodes).map(node => node.textContent)
+          if(ownTags.some(tag => tags.has(tag))){
+            node.remove()
+          }
         }
-      })
-    }
+      }
+
+    })
 
   })
 }
 
 
 const observer = new MutationObserver((mutations) => {
-  setTimeout(() => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((node) => {
-        if (node.nodeType === 1 && node.matches('li')) {
-          filterStreamers() // 새로운 <li>가 추가될 때마다 필터링 적용
-        }
+  chrome.storage.sync.get(['delay'], function (result) {
+    setTimeout(() => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node.matches('li')) {
+            filterStreamers() // 새로운 <li>가 추가될 때마다 필터링 적용
+          }
+        })
       })
-    })
-  }, 70)
+    }, result.delay || 100)
+  })
 })
 
 // body 요소 감시

@@ -10,7 +10,7 @@
 				text-align: center;
 				font-family: Arial, sans-serif;
 			}
-			#add-btn {
+			.add-btn {
 				margin-top: 10px;
 				padding: 8px 16px;
 				background-color: #4CAF50;
@@ -21,8 +21,14 @@
 				font-size: 14px;
 				/*margin-bottom: 10px;*/
 			}
-			#add-btn:hover {
+			.add-btn:hover {
 				background-color: #45a049;
+			}
+			.gap-2 {
+				gap: 0.5rem;
+			}
+			.gap-3 {
+				gap: 0.75rem;
 			}
 			.flex {
 				display: flex;
@@ -41,15 +47,25 @@
 				border-color: #4CAF50;
 				box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 			}
+			.justify-center {
+				justify-content: center;
+			}
 			
 			
 		</style>
 	</head>
 	<body>
+		<div class="flex flex-col gap-2">
+			<input id="delat-input" type="number" value="100"/>
+			<label for="delat-input">삭제 딜레이 조절</label>
+		</div>
 		<h2>필터링할 스트리머명을 입력하세요.</h2>
 		<div id="input-wrap" class="flex flex-col">
 		</div>
-		<button id="add-btn">추가</button>
+		<div class="flex gap-3 justify-center">
+			<button id="add-btn" class="add-btn">추가</button>
+			<button id="tag-add-btn" class="add-btn">태그로 추가</button>
+		</div>
 	</body>
 	<script src="popup.js"></script>
 </html>

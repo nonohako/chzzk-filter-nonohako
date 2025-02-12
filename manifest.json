@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "CHZZK(치지직) 라이브 필터",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "CHZZK(치지직) 라이브 필터",
   "action": {
     "default_popup": "popup.html",
@@ -15,7 +15,11 @@
   ],
   "content_scripts": [
     {
-      "matches": ["https://chzzk.naver.com/","https://chzzk.naver.com/lives"],
+      "matches": [
+        "https://chzzk.naver.com/",
+        "https://chzzk.naver.com/lives",
+        "https://chzzk.naver.com/category/GAME/*/lives"
+      ],
       "js": ["content.js"]
     }
   ]
