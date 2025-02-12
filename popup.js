@@ -1,13 +1,3 @@
-document.getElementById('delat-input').addEventListener('change', function(){
-  chrome.storage.sync.set({'delay': this.value})
-})
-
-function loadDelay(){
-  chrome.storage.sync.get(['delay'], function (result) {
-    document.getElementById('delat-input').value = result.delay || 100
-  })
-}
-
 document.getElementById('add-btn').addEventListener('click', function () {
   const inputWrap = document.getElementById('input-wrap')
   const input = document.createElement('input')
@@ -142,5 +132,4 @@ function loadInputs() {
 // 페이지 로드 시 저장된 값을 불러옴
 document.addEventListener('DOMContentLoaded', function (){
   loadInputs()
-  loadDelay()
 })

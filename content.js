@@ -25,13 +25,11 @@ function filterStreamers(node) {
 
 
 const observer = new MutationObserver((mutations) => {
-  chrome.storage.sync.get(['delay'], function (result) {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((node) => {
-        if (node.matches('li')) {
-          filterStreamers(node) // 새로운 <li>가 추가될 때마다 필터링 적용
-        }
-      })
+  mutations.forEach((mutation) => {
+    mutation.addedNodes.forEach((node) => {
+      if (node.matches('li')) {
+        filterStreamers(node) // 새로운 <li>가 추가될 때마다 필터링 적용
+      }
     })
   })
 })
