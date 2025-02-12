@@ -24,6 +24,57 @@ document.getElementById('add-btn').addEventListener('click', function () {
   // 입력값이 변경될 때마다 저장
   input.addEventListener('input', saveInputs)
 })
+
+document.getElementById("export").addEventListener("click", function () {
+  chrome.storage.sync.get(["streamerNames", "tags"], function (result) {
+    const json = JSON.stringify(result, null, 2)
+    const data = new Blob([json], { type: "application/json" })
+    const url = URL.createObjectURL(data)
+    const a = document.createElement("a")
+    a.href = url
+
+    const date = new Date()
+    const yyMMdd = `${date.getFullYear().toString().slice(2)}${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}${date.getDate().toString().padStart(2, "0")}`
+
+    a.download = `chzzk_filter_${yyMMdd}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+
+    URL.revokeObjectURL(url)
+  })
+})
+
+document.getElementById('import').addEventListener('change', function(){
+  const file = this.files[0]
+  if (!file) return
+
+  const reader = new FileReader()
+
+  reader.onload = function (event) {
+    try {
+      const data = JSON.parse(event.target.result)
+      const {streamerNames, tags} = data
+      if(!streamerNames || !tags) {
+        alert('파일 형식이 부적절합니다.')
+        return
+      }
+      chrome.storage.sync.set({tags, streamerNames})
+      // 기존 인풋 다 삭제 후 로드
+      const inputWrap = document.getElementById('input-wrap')
+      while(inputWrap.firstChild){
+        inputWrap.removeChild(inputWrap.firstChild)
+      }
+      loadInputs()
+    } catch (error) {
+      alert('파일 형식이 부적절합니다.')
+    }
+  }
+  reader.readAsText(file)
+})
+
 document.getElementById('tag-add-btn').addEventListener('click', function () {
   const inputWrap = document.getElementById('input-wrap')
   const input = document.createElement('input')
@@ -130,6 +181,4 @@ function loadInputs() {
 }
 
 // 페이지 로드 시 저장된 값을 불러옴
-document.addEventListener('DOMContentLoaded', function (){
-  loadInputs()
-})
+document.addEventListener('DOMContentLoaded', loadInputs)
