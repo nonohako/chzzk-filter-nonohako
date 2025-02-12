@@ -1,10 +1,10 @@
 console.log("chzzk filter activated")
 
-function filterStreamers(node) {
+function filterStreamers() {
   chrome.storage.sync.get(['streamerNames', 'tags'], function (result) {
     const streamerNames = new Set(result.streamerNames || [])
     const tags = new Set(result.tags || [])
-    // document.querySelectorAll('li').forEach(function (node) {
+    document.querySelectorAll('li').forEach(function (node) {
     const streamerName = node.querySelector('.name_text__yQG50')?.textContent
     if (streamerNames.has(streamerName)) {
       node.style.visibility = 'hidden'
@@ -18,7 +18,7 @@ function filterStreamers(node) {
       }
     }
 
-    // })
+    })
 
   })
 }
@@ -28,7 +28,7 @@ const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     mutation.addedNodes.forEach((node) => {
       if (node.matches('li')) {
-        filterStreamers(node) // 새로운 <li>가 추가될 때마다 필터링 적용
+        filterStreamers() // 새로운 <li>가 추가될 때마다 필터링 적용
       }
     })
   })
