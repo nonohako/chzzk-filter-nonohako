@@ -5,8 +5,7 @@ document.querySelector('body').insertAdjacentHTML('beforeend', `
     
 </div>`)
 
-let removes = []
-let removeSet = new Set()
+let removeNodes = new Set()
 
 function filterStreamers() {
   chrome.storage.sync.get(['streamerNames', 'tags'], function (result) {
@@ -16,9 +15,8 @@ function filterStreamers() {
       const streamerName = node.querySelector('.name_text__yQG50')?.textContent
       if (streamerNames.has(streamerName)) {
         node.style.visibility = 'hidden'
-        if (!removeSet.has(node)) {
-          removeSet.add(node)
-          removes.push(node)
+        if (!removeNodes.has(node)) {
+          removeNodes.add(node)
         }
       } else {
         const tagNodes = node.querySelectorAll('.video_card_category__xQ15T')
@@ -26,9 +24,8 @@ function filterStreamers() {
           const ownTags = Array.from(tagNodes).map(node => node.textContent)
           if (ownTags.some(tag => tags.has(tag))) {
             node.style.visibility = 'hidden'
-            if (!removeSet.has(node)) {
-              removeSet.add(node)
-              removes.push(node)
+            if (!removeNodes.has(node)) {
+              removeNodes.add(node)
             }
           }
         }
@@ -144,9 +141,8 @@ const observer = new MutationObserver((mutations) => {
         document.querySelectorAll('li').forEach((queryNode) => {
           queryNode.addEventListener('contextmenu', handleCustomMenu)
         })
-        removeSet.forEach(node => node.remove())
-        removes = []
-        removeSet = new Set()
+        removeNodes.forEach(node => node.remove())
+        removeNodes = new Set()
       }
     })
   })
