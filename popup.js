@@ -122,7 +122,8 @@ function saveInputs() {
 
 function loadInputs() {
   chrome.storage.sync.get(['streamerNames', 'tags'], function (result) {
-    const {streamerNames, tags} = result
+    const streamerNames = result.streamerNames ?? []
+    const tags = result.tags ?? []
     const inputWrap = document.getElementById('input-wrap')
     streamerNames.forEach((value) => {
       const input = document.createElement('input')
