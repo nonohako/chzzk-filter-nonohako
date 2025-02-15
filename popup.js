@@ -14,9 +14,7 @@ document.getElementById('add-btn').addEventListener('click', function () {
     chrome.storage.sync.get(['streamerNames', 'tags'], function (result) {
       const values = result.streamerNames
       const filtered = values.filter(item => item !== input.value)
-      chrome.storage.sync.set({'streamerNames': filtered}, function () {
-        console.log('삭제 완료:', filtered)
-      })
+      chrome.storage.sync.set({'streamerNames': filtered})
     })
   })
   inputWrap.appendChild(deleteButton)
@@ -91,9 +89,7 @@ document.getElementById('tag-add-btn').addEventListener('click', function () {
     chrome.storage.sync.get(['tags'], function (result) {
       const values = result.tags || []
       const filtered = values.filter(item => item !== input.value)
-      chrome.storage.sync.set({'tags': filtered}, function () {
-        console.log('삭제 완료:', filtered)
-      })
+      chrome.storage.sync.set({'tags': filtered})
     })
   })
   inputWrap.appendChild(deleteButton)
@@ -115,9 +111,7 @@ function saveInputs() {
     }
     return acc
   }, [[], []])
-  chrome.storage.sync.set({streamerNames, tags}, function () {
-    console.log('저장 완료:')
-  })
+  chrome.storage.sync.set({streamerNames, tags})
 }
 
 function loadInputs() {
@@ -142,9 +136,7 @@ function loadInputs() {
         chrome.storage.sync.get(['streamerNames'], function (result) {
           const values = result.streamerNames || []
           const filtered = values.filter(item => item !== input.value)
-          chrome.storage.sync.set({'streamerNames': filtered}, function () {
-            console.log('삭제 완료:', filtered)
-          })
+          chrome.storage.sync.set({'streamerNames': filtered})
         })
       })
       inputWrap.appendChild(deleteButton)
