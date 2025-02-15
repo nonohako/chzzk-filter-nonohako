@@ -78,7 +78,19 @@ function handleCustomMenu(e) {
     streamerBlockDiv.style.cursor = 'pointer'
     streamerBlockDiv.style.fontFamily = 'Arial, sans-serif'
     streamerBlockDiv.style.fontSize = '14px'
+    streamerBlockDiv.style.padding = '5px'; // 패딩 추가 (호버 시 더 보기 좋게)
     streamerBlockDiv.addEventListener('click', () => handleFilterItem(streamerName, 'streamerName'))
+
+    // 호버 시 스타일
+    streamerBlockDiv.addEventListener('mouseover', () => {
+      streamerBlockDiv.style.backgroundColor = '#f0f0f0'
+      streamerBlockDiv.style.color = '#ff0000'
+    })
+    streamerBlockDiv.addEventListener('mouseout', () => {
+      streamerBlockDiv.style.backgroundColor = '' // 원래 배경색으로 복원
+      streamerBlockDiv.style.color = 'green' // 원래 글자색으로 복원
+    })
+
     customMenu.appendChild(streamerBlockDiv)
 
     // 태그 차단
@@ -92,7 +104,19 @@ function handleCustomMenu(e) {
         tagBlockDiv.style.cursor = 'pointer'
         tagBlockDiv.style.fontFamily = 'Arial, sans-serif'
         tagBlockDiv.style.fontSize = '14px'
+        tagBlockDiv.style.padding = '5px'; // 패딩 추가 (호버 시 더 보기 좋게)
         tagBlockDiv.addEventListener('click', () => handleFilterItem(tag, 'tag'))
+
+        // 호버 시 스타일
+        tagBlockDiv.addEventListener('mouseover', () => {
+          tagBlockDiv.style.backgroundColor = '#f0f0f0'
+          tagBlockDiv.style.color = '#ff0000'
+        })
+        tagBlockDiv.addEventListener('mouseout', () => {
+          tagBlockDiv.style.backgroundColor = '' // 원래 배경색으로 복원
+          tagBlockDiv.style.color = 'green' // 원래 글자색으로 복원
+        })
+
         customMenu.appendChild(tagBlockDiv)
       }
     }
