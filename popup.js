@@ -1,4 +1,4 @@
-document.getElementById('add-btn').addEventListener('click', function () {
+document.getElementById('add-btn').addEventListener('click', () => {
   const inputWrap = document.getElementById('input-wrap')
   const input = document.createElement('input')
   input.type = 'text'
@@ -23,10 +23,10 @@ document.getElementById('add-btn').addEventListener('click', function () {
   input.addEventListener('input', saveInputs)
 })
 
-document.getElementById("export").addEventListener("click", function () {
+document.getElementById("export").addEventListener("click", () => {
   chrome.storage.sync.get(["streamerNames", "tags"], function (result) {
     const json = JSON.stringify(result, null, 2)
-    const data = new Blob([json], { type: "application/json" })
+    const data = new Blob([json], {type: "application/json"})
     const url = URL.createObjectURL(data)
     const a = document.createElement("a")
     a.href = url
@@ -45,24 +45,24 @@ document.getElementById("export").addEventListener("click", function () {
   })
 })
 
-document.getElementById('import').addEventListener('change', function(){
+document.getElementById('import').addEventListener('change', function () {
   const file = this.files[0]
   if (!file) return
 
   const reader = new FileReader()
 
-  reader.onload = function (event) {
+  reader.onload = (e) => {
     try {
-      const data = JSON.parse(event.target.result)
+      const data = JSON.parse(e.target.result)
       const {streamerNames, tags} = data
-      if(!streamerNames || !tags) {
+      if (!streamerNames || !tags) {
         alert('파일 형식이 부적절합니다.')
         return
       }
       chrome.storage.sync.set({tags, streamerNames})
       // 기존 인풋 다 삭제 후 로드
       const inputWrap = document.getElementById('input-wrap')
-      while(inputWrap.firstChild){
+      while (inputWrap.firstChild) {
         inputWrap.removeChild(inputWrap.firstChild)
       }
       loadInputs()
@@ -73,7 +73,7 @@ document.getElementById('import').addEventListener('change', function(){
   reader.readAsText(file)
 })
 
-document.getElementById('tag-add-btn').addEventListener('click', function () {
+document.getElementById('tag-add-btn').addEventListener('click', () => {
   const inputWrap = document.getElementById('input-wrap')
   const input = document.createElement('input')
   input.type = 'text'
@@ -115,7 +115,7 @@ function saveInputs() {
 }
 
 function loadInputs() {
-  chrome.storage.sync.get(['streamerNames', 'tags'], function (result) {
+  chrome.storage.sync.get(['streamerNames', 'tags'], (result) => {
     const streamerNames = result.streamerNames ?? []
     const tags = result.tags ?? []
     const inputWrap = document.getElementById('input-wrap')
@@ -133,7 +133,7 @@ function loadInputs() {
         const input = this.previousElementSibling
         input.remove()
         this.remove()
-        chrome.storage.sync.get(['streamerNames'], function (result) {
+        chrome.storage.sync.get(['streamerNames'], (result) => {
           const values = result.streamerNames || []
           const filtered = values.filter(item => item !== input.value)
           chrome.storage.sync.set({'streamerNames': filtered})

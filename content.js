@@ -8,10 +8,10 @@ document.querySelector('body').insertAdjacentHTML('beforeend', `
 let removeNodes = new Set()
 
 function filterStreamers() {
-  chrome.storage.sync.get(['streamerNames', 'tags'], function (result) {
+  chrome.storage.sync.get(['streamerNames', 'tags'], (result) => {
     const streamerNames = new Set(result.streamerNames || [])
     const tags = new Set(result.tags || [])
-    document.querySelectorAll('li').forEach(function (node) {
+    document.querySelectorAll('li').forEach((node) => {
       const streamerName = node.querySelector('.name_text__yQG50')?.textContent
       if (streamerNames.has(streamerName)) {
         node.style.visibility = 'hidden'
@@ -36,7 +36,7 @@ function filterStreamers() {
 }
 
 function handleFilterItem(value, type) {
-  chrome.storage.sync.get(['streamerNames', 'tags'], function (result) {
+  chrome.storage.sync.get(['streamerNames', 'tags'], (result) => {
     const streamerNames = result.streamerNames ?? []
     const tags = result.tags ?? []
     switch (type) {
@@ -62,7 +62,7 @@ function handleFilterItem(value, type) {
 function handleCustomMenu(e) {
   // 스트리머명 먼저 조회
   const streamerName = this.querySelector('.name_text__yQG50')?.textContent
-  if(streamerName){
+  if (streamerName) {
     e.preventDefault()
   } else {
     return
@@ -123,7 +123,7 @@ function handleCustomMenu(e) {
   }
 }
 
-document.addEventListener('click', function () {
+document.addEventListener('click', () => {
   const customMenu = document.getElementById('custom-context-menu')
   if (customMenu.style.display === 'block') {
     customMenu.style.display = 'none'
