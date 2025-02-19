@@ -1,4 +1,5 @@
 console.log("chzzk filter activated")
+console.log("source code link: https://github.com/demd7362/chzzk-filter")
 
 document.querySelector('body').insertAdjacentHTML('beforeend', `
 <div id="custom-context-menu" style="display: none; position: absolute; background-color: black; border: 2px solid green; padding: 10px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);">
