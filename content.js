@@ -1,5 +1,7 @@
 console.log("chzzk filter activated")
 console.log("source code link: https://github.com/demd7362/chzzk-filter")
+const delay = 12 / navigator.hardwareConcurrency * 200
+console.log('delay', delay)
 
 document.querySelector('body').insertAdjacentHTML('beforeend', `
 <div id="custom-context-menu" style="display: none; position: absolute; background-color: black; border: 2px solid green; padding: 10px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);">
@@ -65,7 +67,7 @@ function handleFilterItem(value, type) {
         break
       }
     }
-
+    init()
   })
 }
 
@@ -139,36 +141,39 @@ document.addEventListener('click', () => {
   }
 })
 
-// document.addEventListener('DOMContentLoaded', filterStreamers)
-setTimeout(() => {
-  filterStreamers()
-  deleteHiddenNodes()
-}, 100)
+function init() {
+  setTimeout(() => {
+    filterStreamers()
+    softDeleteHiddenNodes()
+  }, delay)
+}
 
-function deleteHiddenNodes(){
+init()
+
+// https://chzzk.naver.com/lives에서 인기/최신/추천 탭 클릭 시 에러 -> node 삭제가 아니라 display none 처리
+function softDeleteHiddenNodes() {
   document.querySelectorAll('li').forEach(node => {
-    if(node.style.visibility === 'hidden'){ // inline css hidden 설정해놓은 노드
-      node.remove()
+    if (node.style.visibility === 'hidden') { // inline css hidden 설정해놓은 노드
+      node.style.display = 'none'
+      node.style.visibility = 'visible'
     }
   })
 }
 
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
-    mutation.addedNodes.forEach((node) => {
-      if (node.matches('li')) {
-        filterStreamers() // 새로운 <li>가 추가될 때마다 필터링 적용
-
-        // /lives 외에서는 제대로 작동하지않아 전체 li
-        document.querySelectorAll('li').forEach((queryNode) => {
-          queryNode.addEventListener('contextmenu', handleCustomMenu)
-        })
-        deleteHiddenNodes()
-      }
-    })
+    if (mutation.addedNodes.length && mutation.addedNodes[0].matches('li')) {
+      // /lives 외에서는 제대로 작동하지않아 전체 li
+      document.querySelectorAll('li').forEach((queryNode) => {
+        queryNode.addEventListener('contextmenu', handleCustomMenu)
+      })
+      filterStreamers() // 새로운 <li>가 추가될 때마다 필터링 적용
+      softDeleteHiddenNodes()
+    }
   })
 })
 
 // body 요소 감시
 observer.observe(document.body, {childList: true, subtree: true})
 
+document.getElementById('RECOMMEND').addEventListener('click', init)
