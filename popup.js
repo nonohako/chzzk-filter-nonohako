@@ -1,4 +1,4 @@
-document.getElementById('add-btn').addEventListener('click', () => {
+function handleClickAddButton(){
   const inputWrap = document.getElementById('input-wrap')
   const input = document.createElement('input')
   input.type = 'text'
@@ -21,9 +21,10 @@ document.getElementById('add-btn').addEventListener('click', () => {
 
   // 입력값이 변경될 때마다 저장
   input.addEventListener('input', saveInputs)
-})
+}
+document.getElementById('add-btn').addEventListener('click', handleClickAddButton)
 
-document.getElementById("export").addEventListener("click", () => {
+function exportSettings(){
   chrome.storage.sync.get(["streamerNames", "tags"], function (result) {
     const json = JSON.stringify(result, null, 2)
     const data = new Blob([json], {type: "application/json"})
@@ -39,13 +40,15 @@ document.getElementById("export").addEventListener("click", () => {
     a.download = `chzzk_filter_${yyMMdd}.json`
     document.body.appendChild(a)
     a.click()
-    document.body.removeChild(a)
+    document.body?.removeChild(a)
 
     URL.revokeObjectURL(url)
   })
-})
+}
 
-document.getElementById('import').addEventListener('change', function () {
+document.getElementById("export").addEventListener("click", exportSettings)
+
+function importSettings(e){
   const file = this.files[0]
   if (!file) return
 
@@ -63,7 +66,7 @@ document.getElementById('import').addEventListener('change', function () {
       // 기존 인풋 다 삭제 후 로드
       const inputWrap = document.getElementById('input-wrap')
       while (inputWrap.firstChild) {
-        inputWrap.removeChild(inputWrap.firstChild)
+        inputWrap?.removeChild(inputWrap.firstChild)
       }
       loadInputs()
     } catch (error) {
@@ -71,9 +74,10 @@ document.getElementById('import').addEventListener('change', function () {
     }
   }
   reader.readAsText(file)
-})
+}
 
-document.getElementById('tag-add-btn').addEventListener('click', () => {
+document.getElementById('import').addEventListener('change', importSettings)
+function handleClickTagAddButton(){
   const inputWrap = document.getElementById('input-wrap')
   const input = document.createElement('input')
   input.type = 'text'
@@ -96,7 +100,8 @@ document.getElementById('tag-add-btn').addEventListener('click', () => {
 
   // 입력값이 변경될 때마다 저장
   input.addEventListener('input', saveInputs)
-})
+}
+document.getElementById('tag-add-btn').addEventListener('click', handleClickTagAddButton)
 
 function saveInputs() {
   const inputs = document.querySelectorAll('#input-wrap input')
@@ -116,8 +121,7 @@ function saveInputs() {
 
 function loadInputs() {
   chrome.storage.sync.get(['streamerNames', 'tags'], (result) => {
-    const streamerNames = result.streamerNames ?? []
-    const tags = result.tags ?? []
+    const {streamerNames = [], tags = []} = result
     const inputWrap = document.getElementById('input-wrap')
     streamerNames.forEach((value) => {
       const input = document.createElement('input')
@@ -161,9 +165,7 @@ function loadInputs() {
         chrome.storage.sync.get(['tags'], function (result) {
           const values = result.tags || []
           const filtered = values.filter(item => item !== input.value)
-          chrome.storage.sync.set({'tags': filtered}, function () {
-            console.log('삭제 완료:', filtered)
-          })
+          chrome.storage.sync.set({'tags': filtered})
         })
       })
       inputWrap.appendChild(deleteButton)

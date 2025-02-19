@@ -5,8 +5,25 @@ document.querySelector('body').insertAdjacentHTML('beforeend', `
     
 </div>`)
 
-let removeNodes = new Set()
+// function getStorageData(keys) {
+//   return new Promise((resolve, reject) => {
+//     chrome.storage.sync.get(keys, (result) => {
+//       if (chrome.runtime.lastError) {
+//         reject(chrome.runtime.lastError)
+//       } else {
+//         resolve(result)
+//       }
+//     })
+//   })
+// }
+//
+// function setStorageData(key, value, callback) {
+//   return new Promise((resolve, reject) => {
+//     chrome.storage.sync.set({[key]: value}, callback)
+//   })
+// }
 
+// promise를 리턴하고 동기적으로 만들면 스트리밍을 받아오지 못함
 function filterStreamers() {
   chrome.storage.sync.get(['streamerNames', 'tags'], (result) => {
     const streamerNames = new Set(result.streamerNames || [])
@@ -15,30 +32,22 @@ function filterStreamers() {
       const streamerName = node.querySelector('.name_text__yQG50')?.textContent
       if (streamerNames.has(streamerName)) {
         node.style.visibility = 'hidden'
-        if (!removeNodes.has(node)) {
-          removeNodes.add(node)
-        }
       } else {
         const tagNodes = node.querySelectorAll('.video_card_category__xQ15T')
         if (tagNodes.length > 0) {
           const ownTags = Array.from(tagNodes).map(node => node.textContent)
           if (ownTags.some(tag => tags.has(tag))) {
             node.style.visibility = 'hidden'
-            if (!removeNodes.has(node)) {
-              removeNodes.add(node)
-            }
           }
         }
       }
-
     })
   })
 }
 
 function handleFilterItem(value, type) {
   chrome.storage.sync.get(['streamerNames', 'tags'], (result) => {
-    const streamerNames = result.streamerNames ?? []
-    const tags = result.tags ?? []
+    const {streamerNames = [], tags = []} = result
     switch (type) {
       case 'streamerName': {
         if (!streamerNames.includes(value)) {
@@ -62,11 +71,10 @@ function handleFilterItem(value, type) {
 function handleCustomMenu(e) {
   // 스트리머명 먼저 조회
   const streamerName = this.querySelector('.name_text__yQG50')?.textContent
-  if (streamerName) {
-    e.preventDefault()
-  } else {
+  if (!streamerName) {
     return
   }
+  e.preventDefault()
   const customMenu = document.getElementById('custom-context-menu')
   customMenu.style.display = 'block'
   customMenu.style.left = `${e.pageX}px`
@@ -130,6 +138,19 @@ document.addEventListener('click', () => {
   }
 })
 
+// document.addEventListener('DOMContentLoaded', filterStreamers)
+setTimeout(() => {
+  filterStreamers()
+  deleteHiddenNodes()
+}, 100)
+
+function deleteHiddenNodes(){
+  document.querySelectorAll('li').forEach(node => {
+    if(node.style.visibility === 'hidden'){ // inline css hidden 설정해놓은 노드
+      node.remove()
+    }
+  })
+}
 
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
@@ -141,8 +162,7 @@ const observer = new MutationObserver((mutations) => {
         document.querySelectorAll('li').forEach((queryNode) => {
           queryNode.addEventListener('contextmenu', handleCustomMenu)
         })
-        removeNodes.forEach(node => node.remove())
-        removeNodes = new Set()
+        deleteHiddenNodes()
       }
     })
   })
