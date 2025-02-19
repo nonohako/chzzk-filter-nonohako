@@ -38,9 +38,7 @@ function exportSettings(){
       .padStart(2, "0")}${date.getDate().toString().padStart(2, "0")}`
 
     a.download = `chzzk_filter_${yyMMdd}.json`
-    document.body.appendChild(a)
     a.click()
-    document.body?.removeChild(a)
 
     URL.revokeObjectURL(url)
   })
@@ -66,7 +64,7 @@ function importSettings(e){
       // 기존 인풋 다 삭제 후 로드
       const inputWrap = document.getElementById('input-wrap')
       while (inputWrap.firstChild) {
-        inputWrap?.removeChild(inputWrap.firstChild)
+        inputWrap.removeChild(inputWrap.firstChild)
       }
       loadInputs()
     } catch (error) {
