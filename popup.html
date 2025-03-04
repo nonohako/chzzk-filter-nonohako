@@ -2,87 +2,576 @@
 <html lang="ko">
 	<head>
 		<meta charset="UTF-8">
-		<title>chzzk filter</title>
+		<title>CHZZK 필터</title>
 		<style>
+			:root {
+				--primary-color: #00c73c;
+				--primary-hover: #00a534;
+				--bg-color: #1a1a1a;
+				--card-bg: #252525;
+				--text-color: #f0f0f0;
+				--border-color: #333;
+				--danger-color: #ff4757;
+				--danger-hover: #e03546;
+				--secondary-color: #555;
+				--secondary-hover: #666;
+				--link-color: #3498db;
+				--link-hover: #2980b9;
+			}
+			
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			
 			body {
-				width: 200px;
-				padding: 10px;
-				text-align: center;
-				font-family: Arial, sans-serif;
+				width: 320px;
+				font-family: 'Noto Sans KR', sans-serif;
+				background-color: var(--bg-color);
+				color: var(--text-color);
+				padding: 0;
+				margin: 0;
+				height: 500px;
+				overflow: hidden;
 			}
 			
-			.add-btn {
-				margin-top: 10px;
-				padding: 8px 16px;
-				background-color: #4CAF50;
+			.header {
+				background-color: var(--primary-color);
 				color: white;
-				border: none;
-				border-radius: 4px;
-				cursor: pointer;
-				font-size: 14px;
-				/*margin-bottom: 10px;*/
+				padding: 12px 16px;
+				text-align: center;
+				font-weight: bold;
+				font-size: 18px;
+				border-radius: 0 0 8px 8px;
+				margin-bottom: 16px;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+				flex: none;
 			}
 			
-			.add-btn:hover {
-				background-color: #45a049;
-			}
-			
-			.gap-2 {
-				gap: 0.5rem;
-			}
-			
-			.gap-3 {
-				gap: 0.75rem;
-			}
-			
-			.flex {
+			.container {
+				padding: 0 16px 16px;
+				height: calc(100% - 52px);
 				display: flex;
+				flex-direction: column;
+				overflow: hidden;
 			}
 			
-			.flex-col {
+			.tabs {
+				display: flex;
+				margin-bottom: 16px;
+				border-bottom: 1px solid var(--border-color);
+				flex: none;
+			}
+			
+			.tab {
+				padding: 8px 16px;
+				cursor: pointer;
+				opacity: 0.7;
+				transition: all 0.3s;
+				border-bottom: 2px solid transparent;
+			}
+			
+			.tab.active {
+				opacity: 1;
+				border-bottom: 2px solid var(--primary-color);
+				font-weight: bold;
+			}
+			
+			.tab-content {
+				display: none;
+				height: 100%;
+				overflow: hidden;
 				flex-direction: column;
 			}
 			
-			#input-wrap input {
-				padding: 8px;
-				border: 1px solid #ccc;
+			.tab-content.active {
+				display: flex;
+			}
+			
+			.section-title {
+				font-size: 16px;
+				margin-bottom: 12px;
+				color: var(--text-color);
+				font-weight: 500;
+				display: flex;
+				align-items: center;
+				flex: none;
+			}
+			
+			.search-bar {
+				margin-bottom: 12px;
+				position: relative;
+				flex: none;
+			}
+			
+			.sort-options {
+				display: flex;
+				gap: 8px;
+				margin-bottom: 12px;
+				flex: none;
+			}
+			
+			.input-wrap {
+				flex: 1;
+				overflow-y: auto;
+				margin-bottom: 8px;
+				padding-right: 4px;
+				min-height: 0;
+			}
+			
+			.input-group {
+				display: flex;
+				align-items: center;
+				margin-bottom: 12px;
+				background-color: var(--card-bg);
+				border-radius: 8px;
+				border: 1px solid var(--border-color);
+				padding: 8px 12px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				position: relative;
+				gap: 8px;
+				cursor: context-menu;
+			}
+			
+			.streamer-name {
+				flex: 1;
+				padding: 6px 0;
+				color: var(--text-color);
+				font-size: 14px;
+				min-width: 0;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				outline: none;
+			}
+			
+			.streamer-name[contenteditable="true"] {
+				cursor: text;
+				border-bottom: 1px solid transparent;
+			}
+			
+			.streamer-name[contenteditable="true"]:empty:before {
+				content: attr(placeholder);
+				color: #666;
+			}
+			
+			.streamer-name[contenteditable="true"]:hover {
+				border-bottom: 1px solid var(--border-color);
+			}
+			
+			.streamer-name[contenteditable="true"]:focus {
+				border-bottom: 1px solid var(--primary-color);
+			}
+			
+			.streamer-name.has-link {
+				cursor: pointer;
+				color: var(--link-color);
+				text-decoration: underline;
+			}
+			
+			.streamer-name.has-link:hover {
+				color: var(--link-hover);
+			}
+			
+			.streamer-info {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				flex: none;
+				padding: 4px 8px;
+				font-size: 12px;
+				color: #aaa;
+				background-color: rgba(85, 85, 85, 0.2);
 				border-radius: 4px;
+				white-space: nowrap;
+			}
+			
+			.block-time {
+				white-space: nowrap;
+				font-weight: 500;
+				color: #bbb;
+			}
+			
+			.delete-button {
+				flex: none;
+				width: 20px;
+				height: 20px;
+				min-width: unset !important;
+				padding: 0 !important;
+				border-radius: 50%;
+				background-color: var(--danger-color);
+				color: white;
+				font-size: 14px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				opacity: 0.7;
+				transition: all 0.2s;
+				border: none;
+			}
+			
+			.delete-button:hover {
+				opacity: 1;
+				background-color: var(--danger-hover);
+			}
+			
+			.btn-secondary {
+				background-color: var(--secondary-color);
+				color: white;
+				padding: 6px 12px;
+				font-size: 12px;
+				font-weight: normal;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 4px;
+			}
+			
+			.btn-secondary:hover {
+				background-color: var(--secondary-hover);
+			}
+			
+			.button-container {
+				display: flex;
+				margin-left: auto;
+				gap: 8px;
+				flex-shrink: 0;
+				margin-top: 4px;
+				margin-bottom: 4px;
+			}
+			
+			.input-group button {
+				background-color: transparent;
+				border: none;
+				padding: 8px 12px;
+				cursor: pointer;
+				font-size: 13px;
+				transition: all 0.2s;
+				color: var(--text-color);
+				min-width: 80px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin: 0;
+				flex-shrink: 0;
+				font-weight: bold;
+			}
+			
+			.input-group .link-button {
+				color: white;
+				background-color: var(--link-color);
+				margin-right: 4px;
+				border-radius: 4px;
+			}
+			
+			.input-group .link-button:hover {
+				background-color: var(--link-hover);
+			}
+			
+			.link-icon {
 				font-size: 14px;
 			}
 			
-			#input-wrap input:focus {
-				outline: none;
-				border-color: #4CAF50;
-				box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+			.streamer-id {
+				white-space: nowrap;
+				color: var(--primary-color);
+				font-size: 11px;
+				font-weight: 500;
 			}
 			
-			.justify-center {
-				justify-content: center;
+			.btn {
+				padding: 10px 16px;
+				border: none;
+				border-radius: 8px;
+				cursor: pointer;
+				font-size: 14px;
+				font-weight: bold;
+				transition: all 0.2s;
+			}
+			
+			.btn-primary {
+				background-color: var(--primary-color);
+				color: white;
+			}
+			
+			.btn-primary:hover {
+				background-color: var(--primary-hover);
+			}
+			
+			.btn-outline {
+				background-color: transparent;
+				border: 1px solid var(--primary-color);
+				color: var(--primary-color);
+			}
+			
+			.btn-outline:hover {
+				background-color: var(--primary-color);
+				color: white;
+			}
+			
+			.actions {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 8px;
+				flex: none;
+			}
+			
+			.import-export {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 16px;
+				padding-top: 16px;
+				border-top: 1px solid var(--border-color);
 			}
 			
 			.hidden {
 				display: none;
 			}
 			
-			.cursor-pointer {
-				cursor: pointer;
+			.section-title {
+				font-size: 16px;
+				margin-bottom: 12px;
+				color: var(--text-color);
+				font-weight: 500;
+				display: flex;
+				align-items: center;
 			}
-		
-		
+			
+			.empty-state {
+				text-align: center;
+				padding: 24px 0;
+				color: #888;
+				font-size: 14px;
+			}
+			
+			.badge {
+				display: inline-block;
+				padding: 2px 6px;
+				border-radius: 4px;
+				font-size: 12px;
+				margin-left: 8px;
+				background-color: var(--primary-color);
+				color: white;
+			}
+			
+			.search-bar {
+				margin-bottom: 12px;
+				position: relative;
+			}
+			
+			.search-bar input {
+				width: 100%;
+				padding: 8px 12px;
+				border: 1px solid var(--border-color);
+				border-radius: 8px;
+				background-color: var(--card-bg);
+				color: var(--text-color);
+				font-size: 14px;
+			}
+			
+			.search-bar input:focus {
+				outline: none;
+				border-color: var(--primary-color);
+			}
+			
+			.sort-options {
+				display: flex;
+				gap: 8px;
+				margin-bottom: 12px;
+			}
+			
+			.sort-options button {
+				flex: 1;
+			}
+			
+			/* 스크롤바 스타일링 */
+			.input-wrap::-webkit-scrollbar {
+				width: 8px;
+			}
+			
+			.input-wrap::-webkit-scrollbar-track {
+				background: var(--bg-color);
+				border-radius: 4px;
+			}
+			
+			.input-wrap::-webkit-scrollbar-thumb {
+				background: var(--secondary-color);
+				border-radius: 4px;
+			}
+			
+			.input-wrap::-webkit-scrollbar-thumb:hover {
+				background: var(--secondary-hover);
+			}
+			
+			/* 메모 관련 스타일 */
+			.memo-icon {
+				flex: none;
+				font-size: 12px;
+				color: #ffd700;
+				cursor: pointer;
+				margin-right: 8px;
+				padding: 2px 6px;
+				border-radius: 4px;
+				background: linear-gradient(45deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.25));
+				border: 1px solid rgba(255, 215, 0, 0.4);
+				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+				transition: all 0.2s ease;
+			}
+			
+			.memo-icon:hover {
+				background: linear-gradient(45deg, rgba(255, 215, 0, 0.25), rgba(255, 215, 0, 0.35));
+				border-color: rgba(255, 215, 0, 0.6);
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+				transform: translateY(-1px);
+			}
+			
+			.memo-popup {
+				display: none;
+				position: fixed;
+				background: var(--card-bg);
+				border: 1px solid var(--border-color);
+				border-radius: 8px;
+				padding: 12px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+				z-index: 9999;
+				width: 250px;
+			}
+			
+			.memo-field {
+				margin-bottom: 12px;
+			}
+			
+			.memo-field label {
+				display: block;
+				margin-bottom: 4px;
+				color: var(--text-color);
+				font-size: 12px;
+			}
+			
+			.memo-field input[type="text"] {
+				width: 100%;
+				padding: 6px 8px;
+				background: var(--bg-color);
+				border: 1px solid var(--border-color);
+				border-radius: 4px;
+				color: var(--text-color);
+				font-size: 12px;
+			}
+			
+			.memo-popup textarea {
+				width: 100%;
+				height: 100px;
+				background: var(--bg-color);
+				border: 1px solid var(--border-color);
+				border-radius: 4px;
+				color: var(--text-color);
+				padding: 8px;
+				resize: vertical;
+				font-size: 12px;
+			}
+			
+			.memo-popup .memo-actions {
+				display: flex;
+				justify-content: flex-end;
+				gap: 8px;
+			}
+			
+			.memo-popup button {
+				padding: 4px 8px;
+				border-radius: 4px;
+				border: none;
+				cursor: pointer;
+				font-size: 12px;
+			}
+			
+			.memo-popup .save-memo {
+				background: var(--primary-color);
+				color: white;
+			}
+			
+			.memo-popup .cancel-memo {
+				background: var(--secondary-color);
+				color: white;
+			}
 		</style>
 	</head>
 	<body>
-		<div class="flex flex-col">
-			<input id="import" class="hidden" type="file"/>
-			<label for="import" class="cursor-pointer">설정 불러오기</label>
-			<span id="export" class="cursor-pointer">설정 내보내기</span>
+		<div class="header">
+			CHZZK 필터
 		</div>
-		<h2>필터링할 스트리머명을 입력하세요.</h2>
-		<div id="input-wrap" class="flex flex-col"></div>
-		<div class="flex gap-3 justify-center">
-			<button id="add-btn" class="add-btn">추가</button>
-			<button id="tag-add-btn" class="add-btn">태그로 추가</button>
+		
+		<div class="container">
+			<div class="tabs">
+				<div class="tab active" data-tab="streamer">스트리머 필터</div>
+				<div class="tab" data-tab="tag">태그 필터</div>
+				<div class="tab" data-tab="settings">설정</div>
+			</div>
+			
+			<div class="tab-content active" id="streamer-tab">
+				<div class="section-title">필터링할 스트리머 <span class="badge" id="streamer-count">0</span></div>
+				
+				<div class="search-bar">
+					<input type="text" id="streamer-search" placeholder="스트리머 검색...">
+				</div>
+				
+				<div class="sort-options">
+					<button id="sort-by-name" class="btn btn-secondary">이름순 정렬</button>
+					<button id="sort-by-date" class="btn btn-secondary">차단일순 정렬</button>
+				</div>
+				
+				<div id="streamer-wrap" class="input-wrap"></div>
+				
+				<div class="actions">
+					<button id="add-streamer-btn" class="btn btn-primary">스트리머 추가</button>
+				</div>
+			</div>
+			
+			<div class="tab-content" id="tag-tab">
+				<div class="section-title">필터링할 태그 <span class="badge" id="tag-count">0</span></div>
+				
+				<div class="search-bar">
+					<input type="text" id="tag-search" placeholder="태그 검색...">
+				</div>
+				
+				<div class="sort-options">
+					<button id="sort-tag-by-name" class="btn btn-secondary">이름순 정렬</button>
+				</div>
+				
+				<div id="tag-wrap" class="input-wrap"></div>
+				
+				<div class="actions">
+					<button id="add-tag-btn" class="btn btn-primary">태그 추가</button>
+				</div>
+			</div>
+			
+			<div class="tab-content" id="settings-tab">
+				<div class="section-title">설정 관리</div>
+				<div class="actions">
+					<input id="import" class="hidden" type="file"/>
+					<label for="import" class="btn btn-outline">설정 불러오기</label>
+					<button id="export" class="btn btn-primary">설정 내보내기</button>
+				</div>
+			</div>
 		</div>
+		
+		<!-- 메모 팝업 -->
+		<div id="memo-popup" class="memo-popup">
+			<div class="memo-field">
+				<label for="streamer-id">스트리머 ID:</label>
+				<input type="text" id="streamer-id" placeholder="스트리머 ID를 입력하세요">
+			</div>
+			<div class="memo-field">
+				<label for="memo-content">메모:</label>
+				<textarea id="memo-content" placeholder="메모를 입력하세요..."></textarea>
+			</div>
+			<div class="memo-actions">
+				<button class="cancel-memo">취소</button>
+				<button class="save-memo">저장</button>
+			</div>
+		</div>
+		
+		<script src="popup.js"></script>
 	</body>
-	<script src="popup.js"></script>
 </html>

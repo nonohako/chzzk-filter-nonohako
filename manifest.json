@@ -1,26 +1,36 @@
 {
   "manifest_version": 3,
-  "name": "CHZZK(치지직) 라이브 필터",
-  "version": "1.0.8",
-  "description": "CHZZK(치지직) 라이브 필터",
+  "name": "Chzzk Filter",
+  "version": "1.0",
+  "description": "치지직 스트리머/태그 필터링",
   "action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab",
+    "scripting"
   ],
   "host_permissions": [
+    "https://api.chzzk.naver.com/*",
     "https://chzzk.naver.com/*"
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://chzzk.naver.com/",
+        "https://chzzk.naver.com/*",
         "https://chzzk.naver.com/lives",
-        "https://chzzk.naver.com/category/GAME/*/lives"
+        "https://chzzk.naver.com/category/GAME/*/lives",
+        "https://chzzk.naver.com/live/*",
+        "https://chzzk.naver.com/search/*"
       ],
       "js": ["content.js"]
     }
-  ]
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
 }
